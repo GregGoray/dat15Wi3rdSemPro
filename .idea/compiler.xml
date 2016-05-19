@@ -25,8 +25,8 @@
         <module name="Dat15Wi3rdSemesterProject" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Dat15Wi3rdSemesterProject" target="1.5" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="Dat15Wi3rdSemesterProject" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
