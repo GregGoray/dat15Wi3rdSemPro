@@ -96,10 +96,6 @@ public class LogInView extends Application {
         loginScene = new Scene(loginVbox, 232, 350);
         loginVbox.setAlignment(Pos.BOTTOM_CENTER);
 
-        newAccountButton.setOnAction(event -> {
-
-
-        });
 
         loginButton.setOnAction(event -> {
 
