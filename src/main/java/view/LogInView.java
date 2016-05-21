@@ -17,7 +17,7 @@ import model.Therapist;
 /**
  * Created by Edgaras on 4/8/2016.
  */
-public class LogInView extends Application {
+public class LogInView {
 
 
     Stage mainStage = new Stage();
@@ -40,24 +40,10 @@ public class LogInView extends Application {
     Label passwordLabel;
 
 
-    //Greg
-    LoginController loginController = new LoginController();
+
     TherapistController therapistController= new TherapistController();
 
 
-
-
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-
-        mainStage.setScene(getLoginScene());
-        mainStage.show();
-
-
-
-
-    }
 
     public Scene getLoginScene()
     {
@@ -98,11 +84,15 @@ public class LogInView extends Application {
 
 
         loginButton.setOnAction(event -> {
+            //Greg
+            LoginController loginController = new LoginController();
 
             if(loginController.handleLogin(usernameTextField.getText(), passwordTextField.getText())!=null){
                 if(loginController.handleLogin(usernameTextField.getText(), passwordTextField.getText()) instanceof Therapist){
                 System.out.println("logged in as therapist");
                 mainStage.setScene(therapistController.createTherapistView());
+
+
             }
                 if (loginController.handleLogin(usernameTextField.getText(), passwordTextField.getText()) instanceof Child){
                     System.out.println("logged in as a parent");}
