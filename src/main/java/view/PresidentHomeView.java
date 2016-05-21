@@ -1,5 +1,6 @@
 package view;
 
+import controller.PresidentManageTherapistController;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,6 +18,7 @@ import javafx.stage.Stage;
  */
 public class PresidentHomeView extends Application{
 
+    private PresidentManageTherapistController manageTherapistController;
     private Stage primaryStage;
     private Scene scene;
 
@@ -54,6 +56,13 @@ public class PresidentHomeView extends Application{
 
         therapistBtn = new Button("Therapist");
         therapistBtn.setPrefSize(80, 80);
+        therapistBtn.setOnAction(event -> {
+            Scene scene = manageTherapistController.getScenepresidentManageTherapistView();
+            primaryStage.close();
+            primaryStage.setScene(scene);
+            primaryStage.show();
+
+        });
 
         /**
          * Side elements : LoginLbl & Login

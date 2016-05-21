@@ -1,7 +1,9 @@
 package controller;
 
+import javafx.scene.Scene;
 import model.DatabaseModel;
 import model.User;
+import view.LogInView;
 
 /**
  * Created by Grzegorz Goraj on 18-05-2016.
@@ -9,6 +11,7 @@ import model.User;
  */
 public class LoginController {
     DatabaseModel databaseModel= new DatabaseModel();
+    LogInView logInView = new LogInView();
 
     public User handleLogin(String email, String password){
         if(databaseModel.retrieveChildIfAllowedToLogIn(email,password)!=null){
@@ -22,6 +25,10 @@ public class LoginController {
         }
 
     return null;
+    }
+
+    public Scene getLoginScene() {
+        return logInView.getLoginScene();
     }
 
 }
