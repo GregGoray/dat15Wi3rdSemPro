@@ -15,3 +15,6 @@ hs_err_pid*
 /.idea
 /out/
 /target
+pom.xml
+/Dat15Wi3rdSemesterId.iml
+/Dat15Wi3rdSemesterProject.iml
