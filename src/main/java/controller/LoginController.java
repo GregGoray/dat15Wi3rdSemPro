@@ -27,5 +27,9 @@ public class LoginController {
     return null;
     }
 
+    public Scene getLoginScene() {
+        return logInView.getLoginScene();
+    }
+
 
 }

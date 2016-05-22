@@ -48,7 +48,7 @@ public class LogInView extends Application{
 
 
 
-    public void getLoginScene() {
+    public Scene getLoginScene() {
 
         usernameLabel = new Label("User Name");
         passwordLabel = new Label("Password");
@@ -86,22 +86,15 @@ public class LogInView extends Application{
 
 
         loginButton.setOnAction(event -> {
-           loginAction();
+
 
         });
 
-
+        return loginScene;
     }
 
 
-    public void loginAction() {
-        //Greg
-        loginController = new LoginController();
 
-
-
-
-    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {

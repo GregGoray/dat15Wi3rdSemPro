@@ -1,0 +1,443 @@
+package view;
+
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.stage.Stage;
+import model.Child;
+import model.Database;
+import model.Therapist;
+
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+/**
+ * Created by Edgaras on 5/21/2016.
+ */
+public class ChildView extends Application {
+
+    TableView tableView = new TableView();
+    Scene availabilityViewScene;
+    Calendar cal;
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    ArrayList<Label> labels = new ArrayList<>();
+    ArrayList<String> hourLabels = new ArrayList<>();
+    ArrayList<Button> buttons = new ArrayList<>();
+
+    ArrayList<Therapist> therapistList;
+    Database databaseModel;
+
+    HBox hBox;
+    Label weekLabel;
+    Label tableNameLabel;
+    Button incrementByOneButton;
+    Button decrementByOneButton;
+    Button allTherapistsButton;
+    Button yourTherapistsButton;
+    HBox allYourHBox;
+    int[] weekDays = {2, 3, 4, 5, 6, 7, 1}; // because Sunday has number 1, we swap Monday(2) on that place - project requirements
+
+    GridPane gridPane;
+    BorderPane borderPane;
+
+    int weekOfYear;
+
+    VBox tableViewVBox;
+
+    Stage childViewStage;
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        childViewStage = new Stage();
+        childViewStage.setScene(getChildViewScene());
+        childViewStage.show();
+
+    }
+
+    public Scene getChildViewScene() {
+
+        cal = Calendar.getInstance();  // getting the current date
+        cal.setFirstDayOfWeek(Calendar.MONDAY); // setting the Monday to be the first day of the week instead of Sunday
+        weekOfYear = cal.get(Calendar.WEEK_OF_YEAR); // getting the current week number
+
+        gridPane = new GridPane(); // creating a grid pane for the calendar and all the functional buttons
+        gridPane.setVgap(8); // setting spacing between grid rows
+        gridPane.setHgap(8);// setting spacing between grid columns
+        gridPane.setPadding(new Insets(10, 10, 10, 10));
+
+        hBox = new HBox();
+        decrementByOneButton = new Button("<");
+        incrementByOneButton = new Button(">");
+        weekLabel = new Label("WEEK: " + weekOfYear);
+        Label ifLoggedInLabel = new Label();
+
+        /**
+         * Logged as
+         * */
+
+
+        gridPane.setConstraints(ifLoggedInLabel, 0, 0, 3, 2, HPos.LEFT, VPos.TOP);
+        gridPane.getChildren().add(ifLoggedInLabel);
+
+        HBox switchWeeks = new HBox();
+        switchWeeks.getChildren().addAll(decrementByOneButton, weekLabel, incrementByOneButton);
+        gridPane.setConstraints(switchWeeks, 3, 1, 3, 2, HPos.LEFT, VPos.CENTER);
+
+        gridPane.getChildren().add(switchWeeks);
+        decrementByOneButton.setMaxWidth(Double.MAX_VALUE);
+        incrementByOneButton.setMaxWidth(Double.MAX_VALUE);
+
+        decrementByOneButton.setAlignment(Pos.CENTER_RIGHT);
+
+        incrementByOneButton.setOnAction(event1 -> {
+
+
+            incrementByOneButtonAction();
+        });
+
+        decrementByOneButton.setOnAction(event1 -> {
+            decrementByOneButtonAction();
+        });
+
+
+        createLabels();  // CREATING LABELS AND SETTING THEM TO GRID AT ROW 1 POSITIONS 1-7
+
+
+        gridPane.getColumnConstraints().add(new ColumnConstraints(240));
+        gridPane.getColumnConstraints().add(new ColumnConstraints(56));
+        gridPane.getColumnConstraints().add(new ColumnConstraints(56));
+        gridPane.getColumnConstraints().add(new ColumnConstraints(56));
+        gridPane.getColumnConstraints().add(new ColumnConstraints(56));
+        gridPane.getColumnConstraints().add(new ColumnConstraints(56));
+        gridPane.getColumnConstraints().add(new ColumnConstraints(56));
+        gridPane.getColumnConstraints().add(new ColumnConstraints(56));
+
+
+        borderPane = new BorderPane();
+        borderPane.setTop(hBox);
+        borderPane.setCenter(gridPane);
+
+        availabilityViewScene = new Scene(borderPane, 1050, 600);
+
+
+        tableViewVBox = new VBox();
+        allYourHBox = new HBox();
+        tableNameLabel = new Label("List of Therapists");
+        tableNameLabel.setFont(new Font("Arial", 20));  //new jar file added!!!
+        allTherapistsButton = new Button("All therapists");
+
+        allTherapistsButton.setOnAction(event -> {
+            createTableWithAllTherapists();
+            System.out.println("All therapists");
+        });
+
+        yourTherapistsButton = new Button("Your therapists");
+
+        yourTherapistsButton.setOnAction(event -> {
+            createTableWithYourOwnTherapists();
+            System.out.println("Only your therapists");
+        });
+        allYourHBox.getChildren().addAll(allTherapistsButton, yourTherapistsButton);
+        tableViewVBox.getChildren().addAll(tableNameLabel, tableView, allYourHBox);
+        borderPane.setLeft(tableViewVBox);
+
+
+        createHourLabels();
+        //    createTableView();
+        createTableWithAllTherapists();
+        createButtons();
+        return availabilityViewScene;
+
+
+    }
+
+    public void createButtons() {  // probably for model
+        Button logoutButton = new Button("Log out");// ShiftTypes[] shiftTypes= shiftTypesController.getShiftTypes(); // getting values from Enum of ShiftTypes (via Controller)
+
+        gridPane.getChildren().add(logoutButton);
+        gridPane.setConstraints(logoutButton, 10, 0);
+
+        for (int j = 0; j < 10; j++) {
+            for (int i = 0; i < 7; i++) {
+                String dates = labels.get(i).getText();
+                String hour = hourLabels.get(j);
+                String id = dates + " " + hour; // creating buttons Id
+                Button button = new Button();
+                button.setMaxWidth(Double.MAX_VALUE);
+                button.setMaxHeight(Double.MAX_VALUE);
+                button.setId(id);
+                Date sqlDate = Date.valueOf(dates); // asigning a date of sql type Date
+
+                // String shiftType = shiftTypes[j].toString();
+              /*  boolean booked = availabilityController.ifAvailable(sqlDate, shiftTypes[j].toString(), loginController.passLoggedEmployee().getEmpId());
+
+                if(booked == true) {
+
+                    button.setStyle("-fx-base: #00b300"); // green
+
+
+                }
+
+                button.setOnAction(event -> {
+                    // check if(ifAvailable() != true) -> button is gray(person haven't clicked 'available for work' yet
+                    if (availabilityController.ifAvailable(sqlDate, shiftType, loginController.passLoggedEmployee().getEmpId()) != true) { // then add availability
+                        button.setStyle("-fx-base: #00b300"); // green
+
+                        availabilityController.addAvailability(sqlDate, shiftType, loginController.passLoggedEmployee().getEmpId()); // adding entry to availabilities table
+
+                    } else {
+                        availabilityController.removeAvailability(sqlDate, shiftType, loginController.passLoggedEmployee().getEmpId()); // remove entry
+                        button.setStyle("-fx-base: #e3e3e3"); // gray
+
+                    }
+                    // send an update request for the particular button
+
+                });*/
+                button.setOnAction(event -> {
+                    getTableInfo();
+                    System.out.println(button.getId());
+
+
+                });
+                buttons.add(button);
+                gridPane.getChildren().add(button);
+                gridPane.setConstraints(button, i + 1, j + 4);
+            }
+        }
+    }
+
+
+    public void incrementByOneButtonAction() { //main motor to changing the properties of the buttons of the calendar x shift
+        if (weekOfYear < 52) {  // checking if the week is smaller than 52
+            weekOfYear = weekOfYear + 1;// incrementing the week of the year
+            updateDateLabels(labels); // updating the date labels
+            updateButtons();// updating the button information
+
+
+        }
+    }
+
+    public void decrementByOneButtonAction() {//main motor to changing the properties of the buttons of the calendar x shift
+        if (weekOfYear > 1) {// checking if the week is smaller than 52
+            weekOfYear = weekOfYear - 1; // decrementing the week of the year
+            updateDateLabels(labels);// updating the date labels
+            updateButtons();// updating the button information
+
+
+        }
+    }
+
+    public void createHourLabels() {
+        for (int i = 8; i < 18; i++) {
+            Label label = new Label(i + "");
+            hourLabels.add(i + "");
+            gridPane.getChildren().add(label);
+            gridPane.setConstraints(label, 0, i - 4);
+
+        }
+    }
+
+    public Scene getAvailabilityViewScene() {
+        return availabilityViewScene;
+    }
+
+    /**
+     * Labels methods
+     */
+
+    public void updateButtons() {
+
+        //String[] shiftTypes= {"N","D","E"};
+        int indexButton = 0;
+
+        for (int j = 0; j < 10; j++) {
+            for (int i = 0; i < 7; i++) {
+
+                String id = labels.get(i).getText();
+                Button button = buttons.get(indexButton);
+                String date = id.substring(0, 10);
+                String hour = hourLabels.get(j);
+                button.setId(date + " " + hour);
+               /*  String shiftType = id.substring(10, 11);
+                Date sqlDate = Date.valueOf(date);
+                boolean booked = availabilityController.ifAvailable(sqlDate, shiftType, loginController.passLoggedEmployee().getEmpId());
+                if(booked == true) {
+
+                    button.setStyle("-fx-base: #00b300"); // green
+
+
+                }
+                else{
+                    button.setStyle("-fx-base: #e3e3e3"); // gray
+                }
+                //  button.setStyle("-fx-font-size: 20px");
+                button.setId(id);*/
+                button.setOnAction(event -> {
+
+                    getTableInfo();
+                    System.out.println(button.getId());
+                   /* // check if(ifAvailable() != true) -> button is gray(person haven't clicked 'available for work' yet
+                    if(availabilityController.ifAvailable(sqlDate, shiftType, loginController.passLoggedEmployee().getEmpId() ) != true) { // then add availability
+                        button.setStyle("-fx-base: #00b300"); // green
+
+                        availabilityController.addAvailability(sqlDate, shiftType, loginController.passLoggedEmployee().getEmpId()); // adding entry to availabilities table
+
+                    }
+                    else {
+                        availabilityController.removeAvailability(sqlDate, shiftType, loginController.passLoggedEmployee().getEmpId()); // remove entry
+                        button.setStyle("-fx-base: #e3e3e3"); // gray
+
+                    }
+
+
+
+*/
+                    //updateCustomTable(date, shiftType);
+                });
+                indexButton++;
+            }
+        }
+    }
+
+
+    public void createLabels() {
+
+
+        for (int i = 0; i < 7; i++) {    // 7 times we create a label, from Monday label to Sunday label
+
+            cal.set(Calendar.WEEK_OF_YEAR, cal.get(Calendar.WEEK_OF_YEAR)); // setting a calendar to a desired week
+            cal.set(Calendar.DAY_OF_WEEK, weekDays[i]);
+
+            String date = simpleDateFormat.format(cal.getTime());// labels Id format (date)
+            Label label = new Label(); // creating a label for a date
+            label.setText(date);// setting date to label
+            label.setStyle("-fx-font-size: 8px");// setting size of the label
+            labels.add(label);// adding labels to array list of labels
+
+            gridPane.getChildren().add(label); // put label to grid
+            gridPane.setConstraints(label, i + 1, 3); // position label at column 1...7, row 3
+        }
+
+
+    }
+
+    public void updateDateLabels(ArrayList<Label> labels) {
+        weekLabel.setText("WEEK: " + weekOfYear);  // setting the week label to a week of interest
+        cal = Calendar.getInstance(); // getting the current date
+        cal.setFirstDayOfWeek(Calendar.MONDAY);// setting the Monday to be the first day of the week instead of Sunday
+
+
+        for (int i = 0; i < labels.size(); i++) {
+            cal.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+            cal.set(Calendar.DAY_OF_WEEK, weekDays[i]);
+            String date = simpleDateFormat.format(cal.getTime()); // setting a string for a desired date
+            labels.get(i).setText(date); // setting the name of the label to desired date
+
+
+        }
+    }
+
+  /*  public void createTableView(){
+
+        tableViewVBox = new VBox();
+        allYourHBox = new HBox();
+        tableNameLabel = new Label("List of Therapists");
+        tableNameLabel.setFont(new Font("Arial", 20));  //new jar file added!!!
+        allTherapistsButton = new Button("All therapists");
+        yourTherapistsButton = new Button("Your therapists");
+        allYourHBox.getChildren().addAll(allTherapistsButton, yourTherapistsButton);
+        tableViewVBox.getChildren().addAll(tableNameLabel,tableView, allYourHBox );
+        borderPane.setLeft(tableViewVBox);
+
+       // borderPane.setLeft(tableView);
+
+    }  */
+
+    public void createTableWithAllTherapists() {
+
+
+        TableColumn nameCol = new TableColumn("Name");
+        nameCol.setCellValueFactory(new PropertyValueFactory<Child, String>("name"));
+
+        TableColumn surnameCol = new TableColumn("Surname");
+        surnameCol.setCellValueFactory(new PropertyValueFactory<Child, String>("surname"));
+
+        TableColumn telCol = new TableColumn("Tel.");
+        telCol.setCellValueFactory(new PropertyValueFactory<Child, Integer>("mobile1"));
+
+
+        tableView.getColumns().setAll(nameCol, surnameCol, telCol);
+
+
+        tableView.setMaxWidth(428);
+
+        tableView.setPrefHeight(700);
+
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        therapistList = new ArrayList<>();
+
+        databaseModel = Database.getInstance();
+        therapistList = databaseModel.getTherapists();
+        // therapistList = databaseModel.getTherapistsforChild(1);
+        ObservableList<Therapist> therapistObservableList = FXCollections.observableList(therapistList);
+        tableView.setItems(therapistObservableList);
+
+
+    }
+
+    public void createTableWithYourOwnTherapists ()
+    {
+
+        TableColumn nameCol = new TableColumn("Name");
+        nameCol.setCellValueFactory(new PropertyValueFactory<Therapist, String>("name"));
+
+        TableColumn surnameCol = new TableColumn("Surname");
+        surnameCol.setCellValueFactory(new PropertyValueFactory<Therapist, String>("surname"));
+
+        TableColumn telCol = new TableColumn("Tel.");
+        telCol.setCellValueFactory(new PropertyValueFactory<Therapist, Integer>("mobile1"));
+
+
+        tableView.getColumns().setAll(nameCol, surnameCol, telCol);
+
+
+        tableView.setMaxWidth(428);
+
+        tableView.setPrefHeight(700);
+
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        therapistList = new ArrayList<>();
+
+        therapistList = databaseModel.getTherapistsforChild(2);
+        ObservableList<Therapist> therapistObservableList = FXCollections.observableList(therapistList);
+        tableView.setItems(therapistObservableList);
+
+    }
+
+
+
+    public void getTableInfo(){
+        Child child = (Child) tableView.getSelectionModel().getSelectedItem();
+        System.out.println(child.getName());
+
+    }
+
+
+}
