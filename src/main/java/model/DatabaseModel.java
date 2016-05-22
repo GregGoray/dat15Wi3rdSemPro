@@ -215,6 +215,34 @@ public class DatabaseModel {
         return therapists;
     }
 
+    //make method for returning therapist assigned to a child!!!!!
+
+
+    public ArrayList<Therapist> getTherapistsforChild(int childId) {
+        ArrayList<Therapist> therapists = new ArrayList<>();
+
+        try {
+         //   String sql = "SELECT * FROM Therapists INNER JOIN Associations ON Therapists.therapistId = Associations.therapistId WHERE Associations.childId = ? ";
+         String sql = "SELECT * FROM Therapists INNER JOIN Associations ON Therapists.therapistId = Associations.oligo" +
+                 " OR Therapists.therapistId = Associations.hipo OR Therapists.therapistId = Associations.logo OR Therapists.therapistId = Associations.water" +
+                 " OR Therapists.therapistId = Associations.physio WHERE Associations.childId = ? ";
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setInt(1, childId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Therapist therapist = new Therapist(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(7),
+                        resultSet.getString(8), resultSet.getString(9));
+                therapists.add(therapist);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return therapists;
+    }
+
 
 
 
