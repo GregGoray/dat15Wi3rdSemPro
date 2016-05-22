@@ -1,7 +1,6 @@
 package view;
 
 import controller.PresidentManageTherapistController;
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -9,17 +8,16 @@ import javafx.scene.control.Button;
 
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
-import javafx.stage.Stage;
-
 
 /**
  * Created by Grzegorz Goraj on 20-05-2016.
  * email: greg.goray@gmail.com
  */
-public class PresidentHomeView extends Application{
+public class PresidentHomeView {
 
     private PresidentManageTherapistController manageTherapistController;
-    private Stage primaryStage;
+
+
     private Scene scene;
 
     private BorderPane borderPane;
@@ -32,17 +30,17 @@ public class PresidentHomeView extends Application{
 
 
 
-    @Override
+   /* @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
-        Scene scene = runPresidentView();
+        Scene scene = getPresidentView();
         primaryStage.setScene(scene);
         primaryStage.show();
 
-    }
+    }*/
 
 
-    public Scene runPresidentView() {
+    public Scene getPresidentView() {
 
         /**
          * 3 main Buttons
@@ -57,10 +55,8 @@ public class PresidentHomeView extends Application{
         therapistBtn = new Button("Therapist");
         therapistBtn.setPrefSize(80, 80);
         therapistBtn.setOnAction(event -> {
-            Scene scene = manageTherapistController.getScenepresidentManageTherapistView();
-            primaryStage.close();
-            primaryStage.setScene(scene);
-            primaryStage.show();
+
+
 
         });
 
@@ -91,4 +87,6 @@ public class PresidentHomeView extends Application{
         scene = new Scene(borderPane, 1200, 840);
         return scene;
     }
+
+
 }

@@ -3,10 +3,13 @@ import javafx.scene.control.Button;
 
 import java.awt.*;
 
+
 /**
  * Created by Kuba on 2016-05-08.
  */
 public class TherapistView extends AbstractView {
+
+
 
     public TherapistView() {
         addBehaviour();

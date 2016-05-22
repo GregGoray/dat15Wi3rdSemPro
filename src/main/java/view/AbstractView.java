@@ -16,8 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import model.Child;
-import model.DatabaseModel;
-
+import model.Database;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public class AbstractView extends Application {
     ArrayList<Button> buttons = new ArrayList<>();
 
     ArrayList<Child> childrenList;
-    DatabaseModel databaseModel;
+    Database databaseModel = Database.getInstance();
 
     HBox hBox;
     Label weekLabel;
@@ -52,7 +51,6 @@ public class AbstractView extends Application {
 
     int weekOfYear;
 
-    Button whatever;
 
     public void createTableWithChildren()
     {
@@ -79,7 +77,6 @@ public class AbstractView extends Application {
 
         childrenList = new ArrayList<>();
 
-        databaseModel = new DatabaseModel();
         childrenList = databaseModel.getChildren();
         ObservableList<Child> childrenObservableList = FXCollections.observableList(childrenList);
         tableView.setItems(childrenObservableList);

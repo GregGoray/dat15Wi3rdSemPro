@@ -1,29 +1,67 @@
 package model;
 
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import model.Child;
+import model.President;
+import model.Therapist;
+
+import java.sql.*;
 import java.util.ArrayList;
 
 /**
- * Created by Kuba on 2016-05-08.
+ * Created by Kuba, Gregory on 2016-05-08.
+ *
+ * references:
+ * https://www.youtube.com/watch?v=QsBQnFUx388
+ *
  */
-public class DatabaseModel {
+public class Database {
 
-    private java.sql.Connection conn = null;
+    private Connection conn;
 
-    public DatabaseModel() {
+    // how can we re-use that?
+    private PreparedStatement statement;
 
-        String DB_URL = "jdbc:mysql://sql7.freesqldatabase.com:3306/sql7118051";  // dont forget to insert
+    //empty reference - doesnt unneceserely use resources
+    private static Database dbInstance= null;
+
+    //object is to be synchronized    private static Object mutex= new Object();
+    private static Object mutex = new Object();
+
+
+    /**
+     * Constructor
+     */
+    private Database() {
+        //comparing hashcodes of class instance is to help
+        //recognize valiation of Singleton principles
+
+        String DB_URL = "jdbc:mysql://sql7.freesqldatabase.com:3306/sql7118051";
         String USER = "sql7118051";
         String PASS = "EY414dsxHW";
+
         try {
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
         } catch (SQLException e) {
+
             e.printStackTrace();
         }
     }
+
+
+
+    public static Database getInstance(){
+        if(dbInstance==null){
+            synchronized (mutex){
+                if(dbInstance==null) dbInstance= new Database();
+            }
+        }
+        return dbInstance;
+    }
+
+    /**
+     *  Queries *******************************************************************************************************
+     */
 
     public void addNewPresident( String name, String surname, String birthdate, String address, String email, String password,
                                  String mobile) {
@@ -73,7 +111,7 @@ public class DatabaseModel {
     }
 
     public void addNewChild( String name, String surname, String birthdate, String address, String email, String password,
-                                 String mobile1, String mobile2, String disabilities) {
+                             String mobile1, String mobile2, String disabilities) {
         String sql = "INSERT INTO useraccount VALUES(null, ?, ?, ?, ?, ?, ? ,?, ?,? )";
 
         try {
@@ -97,7 +135,7 @@ public class DatabaseModel {
 
     }
     public Child retrieveChildIfAllowedToLogIn(String email, String password) {
-        String sql = "SELECT * FROM Children WHERE email = ? AND password= ?";
+        String sql = "SELECT * FROM children WHERE email = ? AND password= ?";
         Child child = null;
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
@@ -121,7 +159,7 @@ public class DatabaseModel {
     }
 
     public President retrievePresidentIfAllowedToLogIn(String email, String password) {
-        String sql = "SELECT * FROM Presidents WHERE email = ? AND password= ?";
+        String sql = "SELECT * FROM presidents WHERE email = ? AND password= ?";
         President president = null;
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
@@ -146,7 +184,7 @@ public class DatabaseModel {
 
 
     public Therapist retrieveTherapistIfAllowedToLogIn(String email, String password) {
-        String sql = "SELECT * FROM Therapists WHERE email = ? AND password= ?";
+        String sql = "SELECT * FROM therapists WHERE email = ? AND password= ?";
         Therapist therapist = null;
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
@@ -196,7 +234,7 @@ public class DatabaseModel {
         ArrayList<Therapist> therapists = new ArrayList<>();
 
         try {
-            String sql = "SELECT * FROM Therapists";
+            String sql = "SELECT * FROM therapists";
 
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             //preparedStatement.setInt(1, childId);
@@ -214,6 +252,8 @@ public class DatabaseModel {
         }
         return therapists;
     }
+
+
 
 
 

@@ -1,6 +1,7 @@
 package view;
 
 import controller.LoginController;
+import controller.MainController;
 import controller.TherapistController;
 
 
@@ -12,15 +13,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Child;
+import model.Database;
 import model.Therapist;
 
 /**
  * Created by Edgaras on 4/8/2016.
  */
-public class LogInView {
+public class LogInView extends Application{
+
+    private LoginController loginController;
+    private Database database = Database.getInstance();
 
 
-    Stage mainStage = new Stage();
     Scene loginScene;
 
     HBox loginHbox;
@@ -45,8 +49,7 @@ public class LogInView {
 
 
 
-    public Scene getLoginScene()
-    {
+    public void getLoginScene() {
 
         usernameLabel = new Label("User Name");
         passwordLabel = new Label("Password");
@@ -84,28 +87,31 @@ public class LogInView {
 
 
         loginButton.setOnAction(event -> {
-            //Greg
-            LoginController loginController = new LoginController();
-
-            if(loginController.handleLogin(usernameTextField.getText(), passwordTextField.getText())!=null){
-                if(loginController.handleLogin(usernameTextField.getText(), passwordTextField.getText()) instanceof Therapist){
-                System.out.println("logged in as therapist");
-                mainStage.setScene(therapistController.createTherapistView());
-
-
-            }
-                if (loginController.handleLogin(usernameTextField.getText(), passwordTextField.getText()) instanceof Child){
-                    System.out.println("logged in as a parent");}
-            }
-            else{
-                System.out.println("wrong username or password");
-            }
-
-
+           loginAction();
 
         });
 
-        return loginScene;
 
-    } }
+    }
+
+
+    public void loginAction() {
+        //Greg
+        loginController = new LoginController();
+
+        if(usernameTextField.getText().equals("t") && passwordTextField.getText().equals("t")) {
+            loginController.setPrimaryStage(loginScene);
+        }
+
+
+
+
+
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+    }
+}
 
