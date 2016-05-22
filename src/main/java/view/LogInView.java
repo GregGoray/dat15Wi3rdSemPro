@@ -1,7 +1,6 @@
 package view;
 
 import controller.LoginController;
-import controller.MainController;
 import controller.TherapistController;
 
 
@@ -98,11 +97,6 @@ public class LogInView extends Application{
     public void loginAction() {
         //Greg
         loginController = new LoginController();
-
-        if(usernameTextField.getText().equals("t") && passwordTextField.getText().equals("t")) {
-            loginController.setPrimaryStage(loginScene);
-        }
-
 
 
 

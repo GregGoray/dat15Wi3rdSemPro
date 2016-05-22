@@ -20,8 +20,6 @@ public class Child extends User{
         this.name = name;
     }
 
-    public void tralalallaallaal(){}
-
     public int getChildId() {
         return childId;
     }

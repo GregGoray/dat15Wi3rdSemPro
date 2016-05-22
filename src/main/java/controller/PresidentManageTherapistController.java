@@ -9,9 +9,5 @@ import view.PresidentManageTherapistView;
  */
 public class PresidentManageTherapistController {
 
-    PresidentManageTherapistView presidentManageTherapistView = new PresidentManageTherapistView();
 
-    public Scene getScenepresidentManageTherapistView() {
-        return presidentManageTherapistView.getScene();
-    }
 }

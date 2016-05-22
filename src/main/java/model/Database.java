@@ -147,8 +147,6 @@ public class Database {
                 int childId = resultSet.getInt(1);
                 String name = resultSet.getString(2);
 
-
-
                 child = new Child(childId, name);
 
             }
@@ -170,7 +168,6 @@ public class Database {
             if (resultSet.next()) {
                 int presidentId = resultSet.getInt(1);
                 String name = resultSet.getString(2);
-
 
 
                 president = new President(presidentId, name);
@@ -234,10 +231,10 @@ public class Database {
         ArrayList<Therapist> therapists = new ArrayList<>();
 
         try {
-            String sql = "SELECT * FROM therapists";
+            String sql = "SELECT * FROM Therapists";
 
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            //preparedStatement.setInt(1, childId);
+            //preparedStatemex`nt.setInt(1, childId);
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
