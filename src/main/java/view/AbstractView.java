@@ -380,6 +380,8 @@ public class AbstractView extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        createAvailabilityView();
+       primaryStage.setScene(createAvailabilityView());
+        primaryStage.show();
+
     }
 }

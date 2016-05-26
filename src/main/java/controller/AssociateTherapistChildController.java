@@ -1,11 +1,9 @@
 package controller;
 
-import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
 import model.Child;
 import model.Database;
 import model.Therapist;
-import view.AssociateTherapistChild;
 
 import java.util.ArrayList;
 
@@ -16,7 +14,7 @@ import java.util.ArrayList;
 public class AssociateTherapistChildController {
 
     Database db = Database.getInstance();
-    // AssociateTherapistChild associateTherapistChild = new AssociateTherapistChild();
+    // CreateChildProfileView associateTherapistChild = new CreateChildProfileView();
 
 
 

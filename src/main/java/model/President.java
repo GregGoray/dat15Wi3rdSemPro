@@ -3,7 +3,9 @@ package model;
 /**
  * Created by Kuba on 2016-05-08.
  */
-public class President extends User{
+
+public class President extends User {
+
     int presidentId;
     String name;
     String surname;
@@ -49,6 +51,8 @@ public class President extends User{
     public String getMobile() {
         return mobile;
     }
+
+
 
     public President(int presidentId, String name, String surname, String birthdate, String address, String email, String password, String mobile) {
 

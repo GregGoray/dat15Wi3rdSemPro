@@ -3,6 +3,7 @@ package model;
 import model.Child;
 import model.President;
 import model.Therapist;
+import view.CreateChildProfileView;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -45,6 +46,13 @@ public class Database {
         } catch (SQLException e) {
 
             e.printStackTrace();
+        } finally {
+
+            try {
+                conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -278,6 +286,86 @@ public class Database {
         return therapists;
     }
 
+    /******************************************
+     *  queries for TherapistsResume
+     *  ***************************************
+     */
+
+
+    /**
+     *  method returns all theraphists of
+     *
+     */
+    public ArrayList<Therapist> getTherapistsByOccupation() {
+
+        String occupation = CreateChildProfileView.currentOccupation;
+        System.out.println("Database, occupation = " + occupation);
+
+        //container to return
+        ArrayList<Therapist> therapistsList = new ArrayList<>();
+
+
+
+        try {
+
+            String sql = "SELECT * FROM Therapists WHERE occupation = ? ";
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, occupation);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()) {
+
+                Therapist therapist = new Therapist(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
+                                                    resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+                                                    resultSet.getString(7), resultSet.getString(8), resultSet.getString(9));
+                therapistsList.add(therapist);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+
+        return therapistsList;
+    }
+
+
+    /**
+     *  Return TherapistResume based on therapistId
+     */
+
+
+    public TherapistResume getResumeByTherapistId(int therapistId) {
+
+        //container to return
+        ArrayList<Therapist> therapistsList = new ArrayList<>();
+        TherapistResume resume = null;
+
+
+        try {
+
+            String sql = "SELECT * FROM TherapistsResume WHERE therapistId = ? ";
+            PreparedStatement preparedStatement = null;
+            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setInt(1, therapistId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                resume = new TherapistResume(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+                        resultSet.getString(7));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        return resume;
+    }
 
 
 

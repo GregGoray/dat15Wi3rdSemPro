@@ -1,6 +1,6 @@
 package view;
 
-import controller.PresidentManageTherapistController;
+import controller.CreateChildProfileController;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,9 +17,9 @@ import javafx.stage.Stage;
  */
 public class PresidentHomeView extends Application{
 
-    private PresidentManageTherapistController manageTherapistController;
+    private CreateChildProfileController createChildProfileController = new CreateChildProfileController();
 
-
+    private Stage primaryStage;
     private Scene scene;
 
     private BorderPane borderPane;
@@ -32,6 +32,7 @@ public class PresidentHomeView extends Application{
 
 
 
+
     public Scene getPresidentView() {
 
         /**
@@ -40,17 +41,30 @@ public class PresidentHomeView extends Application{
 
         childBtn = new Button("Child");
         childBtn.setPrefSize(80, 80);
+        childBtn.setOnAction(event -> {
+
+            createChildProfileController.startView();
+            primaryStage.hide();
+
+        });
+
 
         parentBtn = new Button("Parent");
         parentBtn.setPrefSize(80, 80);
+        parentBtn.setOnAction(event -> {
+
+
+        });
+
 
         therapistBtn = new Button("Therapist");
         therapistBtn.setPrefSize(80, 80);
         therapistBtn.setOnAction(event -> {
 
 
-
         });
+
+
 
         /**
          * Side elements : LoginLbl & Login
@@ -83,6 +97,7 @@ public class PresidentHomeView extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        this.primaryStage = primaryStage;
         primaryStage.setScene(getPresidentView());
         primaryStage.show();
     }

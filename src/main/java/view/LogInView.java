@@ -11,9 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.Child;
 import model.Database;
-import model.Therapist;
 
 /**
  * Created by Edgaras on 4/8/2016.
@@ -86,7 +84,6 @@ public class LogInView extends Application{
 
 
         loginButton.setOnAction(event -> {
-
 
         });
 
